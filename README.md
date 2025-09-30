@@ -1,1 +1,3 @@
-"# Hello Github" 
+This project made for Local Poker Game.
+
+Developing Project...
