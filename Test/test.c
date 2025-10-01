@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+//Learn About malloc.
+
 int main(){
     int* list;
     int n = 0;
