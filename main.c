@@ -4,8 +4,10 @@
 #include <time.h>
 #include <conio.h>
 #include <windows.h>
+#include <string.h>
 
 void main_screen();
+void in_game(char card[], char commu_card[][11], char player_card[][11]);
 
 int main(){
     int result = 0;
@@ -15,15 +17,26 @@ int main(){
     int j = 0;
     char key;
     unsigned char card[13];
+    char player_card[2][11] = {
+        "???",
+        "???"
+    };
+    char commu_card[5][11] = {
+        "???",
+        "???",
+        "???",
+        "???",
+        "???"
+    };
+    int calc_table[4][7];
     srand(time(NULL));
 
-    for(int k = 0; k < 13; k++){
+    for(int k = 0; k < 13; k++){ //card array reset
         card[k] = '\0';
     }
 
-    while(1){
-        system("cls");
-        main_screen();
+    while(1){ //main screen selection step
+        main_screen(); //call print screen
         key = _getch();
         if(key == '1'){
             break;
@@ -32,7 +45,7 @@ int main(){
         }
     }
 
-    while(i != 13){
+    while(i != 13){ //shuffle card no duplication
         card[i] = rand()%52;
         for(int j = 0; j < i; j++){
             if(card[j] == card[i]){
@@ -43,56 +56,34 @@ int main(){
         i++;
     }
 
-    system("cls");
-    printf("My Card: ");
-    for(int i = 0; i < 2; i++){
-        if(((card[i]) / 13) == 0){
-            printf("Spade%d", card[i] + 1);
-        } else if(((card[i]) / 13) == 1){
-            printf("Diamond%d", card[i] - 12);
-        } else if(((card[i]) / 13) == 2){
-            printf("Heart%d", card[i] - 25);
-        } else if(((card[i]) / 13) == 3){
-            printf("Clover%d", card[i] - 38);
+    in_game(card, commu_card, player_card);
+
+    for(int i = 0; i < 4; i++){ //player card& commu card move to calc table
+        for(int j = 2; j < 7; j++){
+            calc_table[i][j] = card[j+6];
         }
-        if(i != 1){
-            printf(", ");
-        } else {
-            printf("\n");
+        for(int k = 0; k < 2; k++){
+            calc_table[i][k] = card[(i*2)+k];
         }
     }
-
-
-    printf("\n1) Bet\n");
-    printf("2) Fold\n");
-
-    while(1){
-        key = _getch();
-        if(key == '1'){
-            ;
-        } else if(key == '2'){
-            ;
+    //5   4   3   2   1
+    for(int l = 0; l < 4; l++){
+        for(int m = 0; m < 4; m++){
+            if(card[m] > calc_table[l][m+1]){
+                temp = calc_table[l][m];
+                calc_table[l][m] = calc_table[l][m+1];
+                calc_table[l][m+1] = calc_table[l][m];
+                m = 0;
+            }
         }
     }
-
-
-
-    /*for(int i = 0; i < 13; i++){
-        if(((card[i]) / 13) == 0){
-            printf("Card is Spade%d\n", card[i] + 1);
-        } else if(((card[i]) / 13) == 1){
-            printf("Card is Diamond%d\n", card[i] - 12);
-        } else if(((card[i]) / 13) == 2){
-            printf("Card is Heart%d\n", card[i] - 25);
-        } else if(((card[i]) / 13) == 3){
-            printf("Card is Clover%d\n", card[i] - 38);
-        }
-    }*/
 
     return 0;
 }
 
-void main_screen(){
+void main_screen(){ /**초기 화면 제목 및 선택 단계 */
+    char key;
+    //system("cls");
     /*printf("\n");
     printf("______         _                    ______ \n");
     printf("| ___ \\       | |                   | ___ \\\n");
@@ -100,62 +91,85 @@ void main_screen(){
     printf("|  __/  / _ \\ | |/ / / _ \\ |______| |    / \n");
     printf("| |    | (_) ||   < |  __/          | |\\ \\ \n");
     printf("\\_|     \\___/ |_|\\_\\ \\___|          \\_| \\_|\n");
-    printf("\n\n\n");*/
+    printf("\n\n\n");
+    */
     printf("1) Start\n");
     printf("2) Exit\n"); 
 }
 
-void in_game(char key, char card[]){
-    int j = 0;
-    system("cls");
-    printf("My Card: ");
-    for(int i = 0; i < 2; i++){
-        if(((card[i]) / 13) == 0){
-            printf("Spade%d", card[i] + 1);
-        } else if(((card[i]) / 13) == 1){
-            printf("Diamond%d", card[i] - 12);
-        } else if(((card[i]) / 13) == 2){
-            printf("Heart%d", card[i] - 25);
-        } else if(((card[i]) / 13) == 3){
-            printf("Clover%d", card[i] - 38);
-        }
-        if(i != 1){
-            printf(", ");
-        } else {
-            printf("\n");
-        }
-    }
-    j = 11;
-    printf("Community Card: ");
-    for(int i = 8; i < j; i++){
-        if(((card[i]) / 13) == 0){
-            printf("Spade%d", card[i] + 1);
-        } else if(((card[i]) / 13) == 1){
-            printf("Diamond%d", card[i] - 12);
-        } else if(((card[i]) / 13) == 2){
-            printf("Heart%d", card[i] - 25);
-        } else if(((card[i]) / 13) == 3){
-            printf("Clover%d", card[i] - 38);
-        }
-        if(i != 12){
-            printf(", ");
-        } else {
-            printf("\n");
-        }
-    }
+void in_game(char card[], char commu_card[][11], char player_card[][11]){
+    int i = 0;
+    int j = 8;
+    int k = 11;
+    int lemonade = 1;
+    char key = 0;
+    char card_name[13][3] = {
+        "A",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "8",
+        "9",
+        "10",
+        "J",
+        "Q",
+        "K"
+    };
 
-    printf("\n1) Bet\n");
-    printf("2) Fold\n");
+    while(lemonade){ //print card
+        //system("cls");
+        while(i < 2){ //card[0~7] Player1,2,3,4 Card
+            if ((0 <= card[i]) && (card[i] <= 12)){
+                sprintf(player_card[i], "Spade-%s", card_name[card[i]%13]);
+                i++;
+            } else if((13 <= card[i]) && (card[i] <= 25)){
+                sprintf(player_card[i], "Diamond-%s", card_name[card[i]%13]);
+                i++;
+            } else if((26 <= card[i]) && (card[i] <= 38)){
+                sprintf(player_card[i], "Heart-%s", card_name[card[i]%13]);
+                i++;
+            } else if((39 <= card[i]) && (card[i] <= 51)){
+                sprintf(player_card[i], "Clover-%s", card_name[card[i]%13]);
+                i++;
+            }
+        }
+        printf("My Card: %s, %s\n", player_card[0], player_card[1]);
+        
+        while(j < k){ //card[8]부터 Community Card
+            if ((0 <= card[j]) && (card[j] <= 12)){
+                sprintf(commu_card[j-8], "Spade-%s", card_name[card[j]%13]); //j의 값은 commu card의 순서 즉 이미 배부된 카드 하지만 필요한 값은 card임, 값을 잘 못 불러옴
+                j++;
+            } else if((13 <= card[j]) && (card[j] <= 25)){
+                sprintf(commu_card[j-8], "Diamond-%s", card_name[card[j]%13]);
+                j++;
+            } else if((26 <= card[j]) && (card[j] <= 38)){
+                sprintf(commu_card[j-8], "Heart-%s", card_name[card[j]%13]);
+                j++;
+            } else if((39 <= card[j]) && (card[j] <= 51)){
+                sprintf(commu_card[j-8], "Clover-%s", card_name[card[j]%13]);
+                j++;
+            }
+        }
+        printf("Community Card: %s, %s, %s, %s, %s", commu_card[0], commu_card[1], commu_card[2], commu_card[3], commu_card[4]);
 
-    while(1){
-        system("cls");
-        key = _getch();
-        if(key == '1'){
-            j++;
-            break;
-        } else if(key == '2'){
-            j = 13;
-            break;
+        printf("\n1) Bet\n");
+        printf("2) Fold\n");
+
+        while(1){
+            if(j == 13){
+                lemonade = 0;
+            }
+            key = _getch();
+            if(key == '1'){
+                k++;
+                break;
+            } else if(key == '2'){
+                k = 13;
+                break;
+            }
         }
     }
 }

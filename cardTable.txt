@@ -1,0 +1,38 @@
+00~12 Spade
+
+13~25 Diamond
+
+26~38 Heart
+
+39~51 Clover
+
+00 <= card[i] <= 12 //Spade
+
+13 <= card[i] <= 25 //Diamond
+
+26 <= card[i] <= 38 //Heart
+
+39 <= card[i] <= 51 //Clover
+
+
+Royal Straight Flush
+0	9	10	11	12
+1*13	1*13	1*13	1*13	1*13
+2*13	"	"	"	"
+3	"	"	"	"
+
+
+Straight Flush - if((card[i+1] - card[i]) == 1)
+0	1	2	3	4
+1	2	3	4	5
+8	9	10	11	12
+
+
+13...				17
+21	22	23	24	25
+
+26
+34	35	36	37	38
+
+39
+47	48	49	50	51
