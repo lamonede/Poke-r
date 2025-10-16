@@ -1,4 +1,4 @@
-//Spade > Diamond > Clover > Heart
+//Spade > Diamond > Clover > Heart.
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
