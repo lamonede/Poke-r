@@ -35,16 +35,6 @@ int main(){
         card[k] = '\0';
     }
 
-    while(1){ //main screen selection step
-        main_screen(); //call print screen
-        key = _getch();
-        if(key == '1'){
-            break;
-        } else if(key == '2'){
-            return 0;
-        }
-    }
-
     while(i != 13){ //shuffle card no duplication
         card[i] = rand()%52;
         for(int j = 0; j < i; j++){
@@ -54,6 +44,16 @@ int main(){
             }
         }
         i++;
+    }
+
+    while(1){ //main screen selection step
+        main_screen(); //call print screen
+        key = _getch();
+        if(key == '1'){
+            break;
+        } else if(key == '2'){
+            return 0;
+        }
     }
 
     in_game(card, commu_card, player_card);
@@ -66,18 +66,36 @@ int main(){
             calc_table[i][k] = card[(i*2)+k];
         }
     }
-    //5   4   3   2   1
-    for(int l = 0; l < 4; l++){
-        for(int m = 0; m < 4; m++){
-            if(card[m] > calc_table[l][m+1]){
+
+    for(int n = 0; n < 4; n++){
+        for(int o = 0; o < 7; o++){
+            printf("calc[%d][%d] = %d\n", n, o, calc_table[n][o]);
+        }
+        printf("---------------\n");
+    }
+
+    for(int l = 0; l < 4; l++){//5   4   3   2   1
+        for(int m = 0; m < 7; m){
+            if(calc_table[l][m] > calc_table[l][m+1]){
                 temp = calc_table[l][m];
                 calc_table[l][m] = calc_table[l][m+1];
-                calc_table[l][m+1] = calc_table[l][m];
+                calc_table[l][m+1] = temp;
                 m = 0;
+            } else {
+                m++;
             }
         }
     }
 
+    for(int n = 0; n < 4; n++){
+        for(int o = 0; o < 7; o++){
+            printf("calc[%d][%d] = %d\n", n, o, calc_table[n][o]);
+        }
+        printf("---------------\n");
+    }
+
+
+    system("pause");
     return 0;
 }
 
